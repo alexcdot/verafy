@@ -1,9 +1,11 @@
 import json, httplib, urllib, base64, string
+with open('keys.json') as json_data:
+    keys = json.load(json_data)
 
 def getSuggestion(statement, word):
     headers = {
         # Request headers
-        'Ocp-Apim-Subscription-Key': '567bcf0b64d645e2880d710995d3ff88'
+        'Ocp-Apim-Subscription-Key': keys["suggestionsKey"]
     }
     
     params = urllib.urlencode({
@@ -37,7 +39,7 @@ def getTags(statement):
     headers = {
         # Request headers
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': '2bb694121f48499293a61a070aa8e6ad',
+        'Ocp-Apim-Subscription-Key': keys["tagsKey"],
     }
     
     params = urllib.urlencode({
@@ -45,7 +47,7 @@ def getTags(statement):
     
     try:
         conn = httplib.HTTPSConnection('westus.api.cognitive.microsoft.com')
-        data = '{ "language" : "en", "analyzerIds" : ["4fa79af1-f22c-408d-98bb-b7d7aeef7f04", "08EA174B-BFDB-4E64-987E-602F85DA7F72"], "text" : "' + statement +'" }'
+        data = '{ "language" : "en", "analyzerIds" : ["' + keys["analyzerOneKey"] + '", "' + keys["analyzerTwoKey"] + '"], "text" : "' + statement +'" }'
         
         conn.request("POST", "/linguistics/v1.0/analyze?%s" % params, data, headers)
         response = conn.getresponse()
@@ -85,7 +87,7 @@ def getAntonym(word, parsedStatement):
     try:
         conn = httplib.HTTPSConnection('words.bighugelabs.com')
         
-        conn.request("POST", "/api/2/488536c4454c0a90bc703a2ac6670578/%s/" % params)
+        conn.request("POST", "/api/2/" + keys["antonymKey"] + "/%s/" % params)
         response = conn.getresponse()
         data = response.read()
         #print(data)
@@ -99,7 +101,6 @@ def getAntonym(word, parsedStatement):
         antStart = data.find(wordTag + '|ant|')
         if antStart != -1:
             antEnd = data.find('\n', antStart)
-            #print "antonym found: " + data[(len(wordTag) + antStart + 5):antEnd]
             return data[(len(wordTag) + antStart + 5):antEnd]
         else:
             return "Null"
@@ -115,7 +116,7 @@ def getTopic(entity):
     
     try:
         conn = httplib.HTTPSConnection('www.wolframcloud.com')
-        conn.request("POST", "/objects/f00dc79e-44d0-478e-bf45-9db34fa8da85?%s" % params)
+        conn.request("POST", "/objects/" + keys["topicKey"] + "?%s" % params)
         response = conn.getresponse()
         data = json.loads(response.read())
         #print(data)
@@ -135,7 +136,7 @@ def getSamples(entity):
     
     try:
         conn = httplib.HTTPSConnection('www.wolframcloud.com')
-        conn.request("POST", "/objects/794b2d41-2e30-4ccc-a5ce-0b698c03d1b2?%s" % params)
+        conn.request("POST", "/objects/" + keys["samplesKey"] + "?%s" % params)
         response = conn.getresponse()
         data = json.loads(response.read())
         #print(data)
@@ -154,7 +155,7 @@ def getScore(statement):
     headers = {
         # Request headers
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': '567bcf0b64d645e2880d710995d3ff88',
+        'Ocp-Apim-Subscription-Key': keys["scoreKey"],
     }
     
     params = urllib.urlencode({
@@ -285,4 +286,4 @@ def truthme(statement):
 #data = truthme("Boeing is an American company")
 
 
-#print data
+print data
