@@ -5,11 +5,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-with open(os.path.join(__location__, 'keys.json')) as json_data:
-    keys = json.load(json_data)
+#with open(os.path.join(__location__, 'keys.json')) as json_data:
+#    keys = json.load(json_data)
 
 #with open(os.path.join(BASE, 'keys.json')) as json_data:
 #    keys = json.load(json_data)
+
+from keys import keys 
 
 def getSuggestion(statement, word):
     headers = {
