@@ -1,5 +1,8 @@
-import json, httplib, urllib, base64, string
-with open('keys.json') as json_data:
+import json, httplib, urllib, base64, string, os.path
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(BASE, 'keys.json')) as json_data:
     keys = json.load(json_data)
 
 def getSuggestion(statement, word):
@@ -21,7 +24,7 @@ def getSuggestion(statement, word):
         conn.request("POST", "/text/weblm/v1.0/generateNextWords?%s" % params, "", headers)
         response = conn.getresponse()  
         data = json.loads(response.read())
-        #print(data)
+        print(data)
         conn.close()
 
         for candidate in data['candidates']:
@@ -33,7 +36,8 @@ def getSuggestion(statement, word):
         return False
 
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        print("Suggestion Error")
 
 def getTags(statement):
     headers = {
@@ -76,7 +80,8 @@ def getTags(statement):
         return [tags, tokens]
         
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        print("Tagging Error")
     
 def getAntonym(word, parsedStatement):
     params = word
@@ -106,7 +111,8 @@ def getAntonym(word, parsedStatement):
             return "Null"
         
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))    
+        #print("[Errno {0}] {1}".format(e.errno, e.strerror)) 
+        print("Antonym Error")   
     
 def getTopic(entity):
     params = urllib.urlencode({
@@ -125,7 +131,8 @@ def getTopic(entity):
         return str(data['Result']).strip(string.punctuation)
     
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))    
+        #print("[Errno {0}] {1}".format(e.errno, e.strerror))  
+        print("Topic Error")  
     
 def getSamples(entity):
     
@@ -149,7 +156,8 @@ def getSamples(entity):
         return samples
     
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        print("Sampling Error")
 
 def getScore(statement):
     headers = {
@@ -177,7 +185,8 @@ def getScore(statement):
         
         
     except Exception as e:
-        print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
+        print("Scoring Error")
     
 def recombine(tokens, replacement='', index=-1):
     combinedStatement = ""    
@@ -281,9 +290,13 @@ def truthme(statement):
 
 #data = truthme("Eight hours of sleep is healthy")
 #data = truthme("Ducks are aquatic animals")
+#data = truthme("Ducks are mammals")
 #data = truthme("UCLA wasn't founded in 1991")
-#data = truthme("Caltech is a great university")
-#data = truthme("Boeing is an American company")
+#data = truthme("UCLA wasn't founded in 1991")
+#data = truthme("Caltech is a small university")
+#data = truthme("Boeing is a Russian company")
+#data = truthme("Boeing is a Russian company")
+#data = truthme("Donald Trump lost the popular vote")
+#data = truthme("Donald Trump has lowered unemployment")
 
-
-print data
+#print data
