@@ -7,3 +7,4 @@ keys.json
 keyBackup.json
 truthEval.js
 keys.py
+*.pyc
