@@ -5,8 +5,8 @@ html {
     background-image: url(sky.gif);
     background-color: black;
     background-position: center;
-    background-attachment: fixed;;
-    overflow: fixed;
+    background-attachment: fixed;
+    overflow: scroll;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -17,8 +17,9 @@ html {
 
 body {
   width: 100%;
-  overflow: scroll;
+  overflow: fixed;
 }
+
 
 form {
     padding-top: 8em;
@@ -33,6 +34,10 @@ a {
     width: 20em;
     border: none;
     margin-right: 2em;
+    font-size: 1em;
+    font-family: 'Source Sans Pro', sans-serif;
+    padding:5px;
+
 }
 
 button {
