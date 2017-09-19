@@ -5,8 +5,8 @@ html {
     background-image: url(sky.gif);
     background-color: black;
     background-position: center;
-    background-attachment: fixed;
-    overflow: scroll;
+    background-attachment: fixed;;
+    overflow: fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
