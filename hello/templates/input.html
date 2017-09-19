@@ -25,9 +25,47 @@
 
   </head>
 
-  <body align="center">
+  <body>
+    <div class="flex-container">
+      <header>
+        <div style="padding: 50px">
+          <form id="myForm">
+            <h2> What do you want to know? </h2>
+            <p>
+              <form method="GET">
+                <input type="text" id="myInput" name="myInput" value="{{ statement }}">
+                <button id="myButton" type="submit">Fact check!</button>
+              </form>
+            </p>
+          </form>
+        </div>
+      </header>
 
+      <nav class="nav">
+        <ul>
+          <h2>Suggested Queries</h2> 
+          <h3>Eight hours of sleep is healthy <h3>
+          <h3>Ducks are aquatic animals <h3>
+          <h3>Ducks are mammals <h3>
+          <h3>UCLA wasn't founded in 1919  <h3>
+          <h3>UCLA wasn't founded in 1991 <h3>
+          <h3>Caltech is a small university <h3>
+          <h3>Boeing is an American company <h3>
+          <h3>Boeing is a Russian company <h3>
+          <h3>Donald Trump lost the popular vote <h3>
+          <h3>Donald Trump has lowered unemployment <h3>          
+        </ul>
 
+      </nav>
+
+      <article class="article">
+        <div id="infoLabel">
+          <h1>{{ evaluation }}<h1>
+        </div>>
+      </article>
+    </div>
+
+<!--
     <div style="padding: 50px">
       <form id="myForm">
         <h2> What do you want to know? </h2>
@@ -37,9 +75,9 @@
             <button id="myButton" type="submit">Fact check!</button>
           </form>
         </p>
-    </form>
-  </div>
-    <!-- save space for truth value output -->
+      </form>
+    </div>
+    --><!-- save space for truth value output --><!--
 
     <div id="suggestedQueries" align="right" style = "padding: 10px">
       <h2>Suggested Queries</h2>
@@ -59,6 +97,7 @@
     <div id="infoLabel" align="left" style="padding: 20px">
       <h1>{{ evaluation }}<h1>
     </div>
+  -->
   </body>
 
 </html>
