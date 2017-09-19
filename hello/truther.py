@@ -2,8 +2,11 @@ import json, httplib, urllib, base64, string, os.path
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(BASE, 'keys.json')) as json_data:
+with open('keys.json') as json_data:
     keys = json.load(json_data)
+
+#with open(os.path.join(BASE, 'keys.json')) as json_data:
+#    keys = json.load(json_data)
 
 def getSuggestion(statement, word):
     headers = {
