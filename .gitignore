@@ -8,3 +8,4 @@ keyBackup.json
 truthEval.js
 keys.py
 *.pyc
+django_key.py
