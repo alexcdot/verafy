@@ -21,6 +21,7 @@ python manage.py runserver
 ```
 To run the server in production mode, run:
 ```
+sudo python manage.py collectstatic
 export VERAFY_DEBUG=False
 python manage.py runserver
 ```
