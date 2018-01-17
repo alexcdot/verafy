@@ -28,8 +28,6 @@ SECRET_KEY = django_key
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    u'vera-env.vdnceqx9gm.us-west-2.elasticbeanstalk.com',
-    'vera-env.vdnceqx9gm.us-west-2.elasticbeanstalk.com',
     u'localhost',
     u'127.0.0.1',
     u'verafy.me'
@@ -101,7 +99,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_valdj_databaseidation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
