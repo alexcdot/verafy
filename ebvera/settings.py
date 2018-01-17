@@ -25,7 +25,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = django_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if 'VERAFY_DEBUG' in os.environ and os.environ['VERAFY_DEBUG']:
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = [
     u'localhost',
@@ -125,4 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/verafy.me/static/'
+if 'VERAFY_DEBUG' in os.environ and os.environ['VERAFY_DEBUG']:
+    STATIC_ROOT = 'static'
+else:
+    STATIC_ROOT = '/var/www/verafy.me/static/'
