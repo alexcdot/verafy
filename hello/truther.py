@@ -5,15 +5,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-#with open(os.path.join(__location__, 'keys.json')) as json_data:
-#    keys = json.load(json_data)
-
-#with open(os.path.join(BASE, 'keys.json')) as json_data:
-#    keys = json.load(json_data)
-
 from keys import keys 
 
 def getSuggestion(statement, word):
+    '''
+    Check to see if the input word is commonly used to
+    complete the input statement.
+    '''
     headers = {
         # Request headers
         'Ocp-Apim-Subscription-Key': keys["suggestionsKey"]
@@ -37,17 +35,17 @@ def getSuggestion(statement, word):
 
         for candidate in data['candidates']:
             if word == candidate['word']:
-                #print word
                 return True
         
-        #print 'no suggestions'
         return False
 
     except Exception as e:
-        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
         print("Suggestion Error")
 
 def getTags(statement):
+    '''
+    Get specific POS tags on the words in the statement.
+    '''
     headers = {
         # Request headers
         'Content-Type': 'application/json',
@@ -88,14 +86,19 @@ def getTags(statement):
         return [tags, tokens]
         
     except Exception as e:
-        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
         print("Tagging Error")
     
 def getAntonym(word, parsedStatement):
+    '''
+    Get the antonym of a specific word in a statement.
+
+    This function is used to create sentences that directly oppose the
+    input sentence
+    '''
     params = word
     wordTag = ""
     
-        # Request parameters
+    # Request parameters
     
     try:
         conn = httplib.HTTPSConnection('words.bighugelabs.com')
@@ -116,13 +119,17 @@ def getAntonym(word, parsedStatement):
             antEnd = data.find('\n', antStart)
             return data[(len(wordTag) + antStart + 5):antEnd]
         else:
-            return "Null"
+            return None
         
     except Exception as e:
-        #print("[Errno {0}] {1}".format(e.errno, e.strerror)) 
         print("Antonym Error")   
     
 def getTopic(entity):
+    '''
+    Get the topic of the selected entity.
+
+    For example, the topic of "boeing" is "airplane"
+    '''
     params = urllib.urlencode({
         # Request parameters
         'input': entity
@@ -133,16 +140,19 @@ def getTopic(entity):
         conn.request("POST", "/objects/" + keys["topicKey"] + "?%s" % params)
         response = conn.getresponse()
         data = json.loads(response.read())
-        #print(data)
         conn.close()
                                 
         return str(data['Result']).strip(string.punctuation)
     
     except Exception as e:
-        #print("[Errno {0}] {1}".format(e.errno, e.strerror))  
         print("Topic Error")  
     
 def getSamples(entity):
+    '''
+    Get similar and related entities from the input entity.
+
+    This function is used to create similar sentences to the input sentence
+    '''
     
     params = urllib.urlencode({
         # Request parameters
@@ -164,10 +174,15 @@ def getSamples(entity):
         return samples
     
     except Exception as e:
-        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
         print("Sampling Error")
 
 def getScore(statement):
+    '''
+    Get the likeliness score that the input statement is commonly found.
+
+    Our hypothesis is that true statements are generally common. This hypothesis
+    fails when applied to conspiracy theories and the like.
+    '''
     headers = {
         # Request headers
         'Content-Type': 'application/json',
@@ -193,10 +208,12 @@ def getScore(statement):
         
         
     except Exception as e:
-        #print("[Errno {0}] {1}".format(e.errno, e.strerror))
         print("Scoring Error")
     
 def recombine(tokens, replacement='', index=-1):
+    '''
+    Recombine the tokens into a single statement
+    '''
     combinedStatement = ""    
     
     if index != -1:
@@ -205,17 +222,33 @@ def recombine(tokens, replacement='', index=-1):
     for token in tokens:
         if token:
             combinedStatement += token + " "
-    #print combinedStatement[:len(combinedStatement) -1]        
     return combinedStatement[:len(combinedStatement) -1]
 
 def getLikelihood(phrase, basePhrase):
-    '''Returns a string percentage of likelihood of truth of phrase.'''
+    '''
+    Returns a string percentage of likelihood of truth of phrase, compared to
+    a control, base phrase
+    '''
     return 10 ** (getScore(phrase) - getScore(basePhrase))
 
 def truthme(statement):
+    '''
+    Guess whether a statement is true or false.
+
+    We use a series of processes to try to define this, executed in the order
+    of confidence. This function is prepared to check sentences of the form:
+    [Subject][Verb][Descriptor]
+
+    1. Check if the descriptor is commonly associated with the subject
+    2. Check if the input sentence is more likely than the opposite sentence
+    3. Check if the input snetence is the most likely among several similar
+       sentences
+    4. Check the overall likelihood of the sentence using Microsoft's web
+       language model
+
+    '''
 
     parsedStatement = getTags(statement) # tags, tokens
-    #print parsedStatement
     verbIndex = 0   
     notExists = False
     fullySuggested = False
@@ -226,11 +259,9 @@ def truthme(statement):
         if tag == 'verb':
             verbIndex = i
             break
-        
-    #print verbIndex
-    
-    # check for a not    
-    
+            
+    # check for a negation
+
     for i, token in enumerate(parsedStatement[1]):
         if token.lower() == 'not' or token.lower() == 'n\'t':
             notExists = True
@@ -252,12 +283,13 @@ def truthme(statement):
     if fullySuggested:
         return (True != notExists)    
     
-    # check for an antonym adjective, and compare    
+    # check for an antonym adjective, and compare an opposing sentence with the
+    # input sentence
     
     for i in range(verbIndex + 1, len(parsedStatement[0])):
         if parsedStatement[0][i] == 'adjective':
             antonym = getAntonym(parsedStatement[1][i], parsedStatement)
-            if antonym != "Null":
+            if antonym != None:
                 if (getScore(recombine(parsedStatement[1])) >
                 getScore(recombine(parsedStatement[1], antonym, i))):
                     return (True != notExists)
@@ -269,7 +301,7 @@ def truthme(statement):
     for i in range(verbIndex + 1, len(parsedStatement[0])):
         if parsedStatement[0][i] == 'noun':
             antonym = getAntonym(parsedStatement[1][i], parsedStatement)
-            if antonym != "Null":
+            if antonym != None:
                 if (getScore(recombine(parsedStatement[1])) >
                 getScore(recombine(parsedStatement[1], antonym, i))):
                     return (True != notExists)
@@ -296,6 +328,7 @@ def truthme(statement):
     return ((getScore(recombine(parsedStatement[1])) > -10.0) != notExists)
 
 
+# Sample sentences
 #data = truthme("Eight hours of sleep is healthy")
 #data = truthme("Ducks are aquatic animals")
 #data = truthme("Ducks are mammals")
