@@ -10,6 +10,23 @@ Check it out at [https://verafy.me](https://verafy.me).
 
 <img width="1680" alt="screen shot 2017-04-02 at 7 22 51 am" src="https://cloud.githubusercontent.com/assets/7104017/24588013/47be8d7e-1775-11e7-995a-03c936cc7bc1.png">
 
+## Getting started
+
+You need to add keys.py to the hello/ directory, and django_key.py to the ebvera/ directory.
+
+To run the server in development mode, run:
+```
+export VERAFY_DEBUG=True
+python manage.py runserver
+```
+To run the server in production mode, run:
+```
+sudo python manage.py collectstatic
+export VERAFY_DEBUG=False
+python manage.py runserver
+```
+Production mode is the default, if VERAFY_DEBUG is not set.
+
 ## How it works
 
 We used Microsoft Cognitive Services (MCS) Language Analytics to pick apart the parts of speech in the statement, and break it down in subject, verb, and descriptor (e.g. The sky (subject) is (verb) blue (descriptor)). The statement is subject to several algorithms. 
