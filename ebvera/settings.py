@@ -25,10 +25,11 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = django_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if 'VERAFY_DEBUG' in os.environ and os.environ['VERAFY_DEBUG']:
+if 'VERAFY_DEBUG' in os.environ and os.environ['VERAFY_DEBUG'] not in ['0', 'False', False]:
     DEBUG = True
 else:
     DEBUG = False
+print("DEBUG mode is on:", DEBUG)
 
 ALLOWED_HOSTS = [
     u'localhost',
